@@ -28,8 +28,8 @@ class HashTablePermutohedral(object):
         self.capacity = 2 ** 15
         self.filled = 0
         self.entries = [{'key_idx': -1, 'value_idx': -1} for _ in range(self.capacity)]
-        self.keys = np.zeros((kd_ * self.capacity / 2), dtype='int16')
-        self.values = np.zeros((vd_ * self.capacity / 2), dtype='float32')
+        self.keys = np.zeros((kd_ * self.capacity // 2), dtype='int16')
+        self.values = np.zeros((vd_ * self.capacity // 2), dtype='float32')
 
     def size(self):
         return self.filled
@@ -98,10 +98,13 @@ class HashTablePermutohedral(object):
             return offset
 
     def _hash(self, key):
+        """
         k = 0
         for i in range(self.kd):
             k += key[i]
             k *= 2531011
+        """
+        k = hash(key.tostring())
         return k
 
     def _grow(self):
@@ -316,7 +319,7 @@ class PermutohedralLattice(object):
             self.greedy[cond_mask] += self.d1
             self.rank[cond_mask] += self.d1
 
-        self.rank += sum
+        self.rank += sum.astype(np.int16)
 
         # reset barycentric
         self.barycentric *= 0
